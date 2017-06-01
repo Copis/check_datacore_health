@@ -118,9 +118,20 @@ function check_ldisk {
 # Check Ports
 function check_port {
     connect
-    #$ports = Get-DcsPort -Type iSCSI
-    Write-Host "Not yet implemented"
-    exit $UNKNOWN   
+    $ports = Get-DcsPort -Type iSCSI
+    foreach ($port in $ports) {
+        if ($port.Connected -ne 'True' -and $port.Alias -notlike '*_MGMT') {
+            $err_port += $port.Alias+' status is '+$port.Connected+', '
+        }
+    }
+    if ($err_port -eq $null) {
+        Write-Host "OK: All ports are connected"
+        exit $OK
+    }
+    else {
+        Write-Host "CRITICAL: "$err_port
+        exit $CRITICAL
+    }
 }
 
 # Check Alerts
