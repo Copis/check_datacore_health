@@ -25,9 +25,15 @@ if (!(get-module -name DataCore.Executive.Cmdlets)) {
 
 # Connect to SANsymphony
 function connect {
-    $server = hostname
-    if (!(Connect-DcsServer -Server $server)) { 
-        Write-Host "Unable to connect Datacore server $server"
+    if ($server -eq '') {
+        $server = hostname
+        if (!(Connect-DcsServer -Server $server)) { 
+            Write-Host "Unable to connect Datacore server $server"
+            exit $CRITICAL
+        }
+    }
+    elseif (!(Connect-DcsServer -Server $server -Username $user -Password $password)) { 
+        Write-Host "Unable to connect Datacore server $server with provided credentials"
         exit $CRITICAL
     }
 }
