@@ -188,7 +188,7 @@ function print_usage {
         -s -server    : Set if plugin runs out of datacore server
         -u -user      : Set diferent user to run this script
         -p -password  : Password to use with the username
-        -t -type      : Specify command type (pool, server, vdisk, ldisk, port, alert, health, help)"
+        -t -type      : Specify command type (pool, server, vdisk, ldisk, port, alert, health)"
 }
 
 switch ($type) {
@@ -199,6 +199,5 @@ switch ($type) {
     port { check_port }
     alert { check_alert }
     health { check_health }
-    help { print_usage }
     default { print_usage }
 }
