@@ -137,9 +137,31 @@ function check_port {
 # Check Alerts
 function check_alert {
     connect
-    #$alerts = Get-DcsAlert
-    Write-Host "Not yet implemented"
-    exit $UNKNOWN   
+    $last_timestamp = Get-Date (Get-Date -Date $act_date).AddHours(-1.5)
+    $alert_state = @("Warning","Critical","Error")
+    $alerts = Get-DcsAlert |? {$_.level -in $alert_state -and $_.timestamp -ge $last_timestamp}
+    if ($alerts -eq $null) {
+        Write-Host "OK: There are no new alerts"
+        exit $OK
+    }
+    else {
+        foreach ($alert in $alerts) {
+            if ($alert.Level -eq 'Warning') {
+                $warn_alert += $alert.MachineName+': '+$alert.MessageText+', '
+            }
+            else {
+                $crit_alert += $alert.MachineName+': '+$alert.MessageText+', '
+            }
+        }
+        if ($crit_alert -ne $null){
+            Write-Host "CRITICAL: "$crit_alert
+            exit $CRITICAL
+        }
+        else {
+            Write-Host "WARNING: "$warn_alert
+            exit $WARNING
+        }
+    }
 }
 
 # Check Health
