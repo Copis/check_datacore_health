@@ -143,7 +143,7 @@ function check_port {
 # Check Alerts
 function check_alert {
     connect
-    $last_timestamp = Get-Date (Get-Date -Date $act_date).AddHours(-1.5)
+    $last_timestamp = Get-Date (Get-Date).AddHours(-1.5) -Format G
     $alert_state = @("Warning","Critical","Error")
     $alerts = Get-DcsAlert |? {$_.level -in $alert_state -and $_.timestamp -ge $last_timestamp}
     if ($alerts -eq $null) {
