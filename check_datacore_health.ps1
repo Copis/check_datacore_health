@@ -184,7 +184,7 @@ function check_health {
             $err_health += $issue.ExtendedCaption+' is '+$issue.State+', '
         }
         Write-Host "CRITICAL: "$err_health
-        exit $OK
+        exit $CRITICAL
     }
 }
 
