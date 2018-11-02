@@ -27,12 +27,12 @@ if (!(get-module -name DataCore.Executive.Cmdlets)) {
 function connect {
     if ($server -eq '') {
         $server = hostname
-        if (!(Connect-DcsServer -Server $server)) { 
+        if (!(Connect-DcsServer -Server $server)) {
             Write-Host "Unable to connect Datacore server $server"
             exit $CRITICAL
         }
     }
-    elseif (!(Connect-DcsServer -Server $server -Username $user -Password $password)) { 
+    elseif (!(Connect-DcsServer -Server $server -Username $user -Password $password)) {
         Write-Host "Unable to connect Datacore server $server with provided credentials"
         exit $CRITICAL
     }
@@ -76,7 +76,7 @@ function check_server {
     elseif ($err_dc -ne $null) {
         Write-Host "CRITICAL: "$err_dc+" "+$war_dc
         exit $CRITICAL
-    } 
+    }
     else {
         Write-Host "WARNING: "$war_dc
         exit $WARNING
@@ -181,10 +181,22 @@ function check_health {
     }
     else {
         foreach ($issue in $health) {
-            $err_health += $issue.ExtendedCaption+' is '+$issue.State+', '
+            if ($issue.State -eq 'Attention'){
+              $war_health += $issue.ExtendedCaption+' is '+$issue.State+', '
+            }
+            else {
+              $err_health += $issue.ExtendedCaption+' is '+$issue.State+', '
+            }
         }
-        Write-Host "CRITICAL: "$err_health
-        exit $CRITICAL
+        if ($err_health -ne $null){
+          Write-Host "CRITICAL: "$err_health
+          exit $CRITICAL
+        }
+        else {
+          Write-Host "WARNING: "$war_health
+          exit $WARNING
+        }
+
     }
 }
 
