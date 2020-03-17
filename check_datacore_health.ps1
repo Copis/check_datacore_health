@@ -181,7 +181,7 @@ function check_health {
     }
     else {
         foreach ($issue in $health) {
-            if ($issue.State -eq 'Attention'){
+            if ($issue.State -eq 'Attention' -or $issue.State -eq 'Warning'){
               $war_health += $issue.ExtendedCaption+' is '+$issue.State+', '
             }
             else {
